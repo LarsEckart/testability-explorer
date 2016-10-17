@@ -1,1 +1,1 @@
-java -jar testability-explorer-1.3.2-with-deps.jar $@
+java -jar testability-explorer-1.3.4-with-deps.jar $@
