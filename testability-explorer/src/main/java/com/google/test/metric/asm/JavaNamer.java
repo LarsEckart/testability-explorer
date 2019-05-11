@@ -22,8 +22,7 @@ import com.google.test.metric.Type;
 
 public class JavaNamer {
 
-  public String nameMethod(String className, String methodName,
-      String methodDesc) {
+  public String nameMethod(String className, String methodName, String methodDesc) {
     StringBuilder fullName = new StringBuilder();
     if (methodName.equals("<init>")) {
       int index = Math.max(className.lastIndexOf("."), className

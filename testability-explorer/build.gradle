@@ -3,7 +3,7 @@ plugins {
 }
 
 dependencies {
-    compile 'com.google.classpath-explorer:classpath-explorer:1.0'
+    compile project(':classpath-explorer')
     compile 'com.google.collections:google-collections:0.9'
     compile 'asm:asm:3.0'
     compile 'antlr:antlr:2.7.7'
@@ -12,6 +12,11 @@ dependencies {
     compile 'com.google.inject:guice:2.0'
     compile 'xerces:xercesImpl:2.8.1'
     testCompile 'junit:junit:3.8.2'
+    //antlr "org.antlr:antlr4:4.5"
 }
 
 description = 'Testability Explorer - Core'
+
+generateGrammarSource {
+    //outputDirectory = new File("${project.buildDir}/generated-src/antlr/main/com/google/test/metric/javasrc".toString())
+}
