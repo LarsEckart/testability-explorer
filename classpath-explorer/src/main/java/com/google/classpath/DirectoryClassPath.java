@@ -29,7 +29,7 @@ public class DirectoryClassPath implements ClassPath {
 
         @Override
         public boolean accept(File dir) {
-            return dir.isDirectory() && !dir.getName().equals(".git");
+            return dir.isDirectory() && !".git".equals(dir.getName());
         }
     }
 

@@ -126,8 +126,7 @@ public class JARClassPath implements ClassPath {
     private Package addPackage(String path) {
         String[] parts = path.split("/");
         Package pkg = root;
-        for (int i = 0; i < parts.length; i++) {
-            String name = parts[i];
+        for (String name : parts) {
             if (pkg.packages.containsKey(name)) {
                 pkg = pkg.packages.get(name);
             } else {
@@ -150,9 +149,8 @@ public class JARClassPath implements ClassPath {
     private Package getPackage(String packageName) {
         String[] parts = packageName.split("/");
         Package pkg = root;
-        for (int i = 0; i < parts.length; i++) {
-            String name = parts[i];
-            if (name.equals("")) {
+        for (String name : parts) {
+            if (name.isEmpty()) {
                 continue;
             }
             pkg = pkg.packages.get(name);

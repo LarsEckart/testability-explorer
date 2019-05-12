@@ -15,11 +15,11 @@
  */
 package com.google.classpath;
 
-import static java.util.Arrays.asList;
-
 import java.io.InputStream;
 import java.util.SortedSet;
 import java.util.TreeSet;
+
+import static java.util.Arrays.asList;
 
 public class CompositeClassPath implements ClassPath {
 
@@ -29,54 +29,63 @@ public class CompositeClassPath implements ClassPath {
         this.classPaths = classPaths;
     }
 
+    @Override
     public boolean isResource(String resource) {
         for (ClassPath classPath : classPaths) {
-            if (classPath.isResource(resource))
+            if (classPath.isResource(resource)) {
                 return true;
+            }
         }
         return false;
     }
 
+    @Override
     public boolean isPackage(String packageName) {
         for (ClassPath classPath : classPaths) {
-            if (classPath.isPackage(packageName))
+            if (classPath.isPackage(packageName)) {
                 return true;
+            }
         }
         return false;
     }
 
+    @Override
     public String[] listPackages(String packageName) {
-        SortedSet<String> packages = new TreeSet<String>();
+        SortedSet<String> packages = new TreeSet<>();
         for (ClassPath classPath : classPaths) {
             packages.addAll(asList(classPath.listPackages(packageName)));
         }
-        return (String[]) packages.toArray(new String[packages.size()]);
+        return packages.toArray(new String[0]);
     }
 
+    @Override
     public String[] listResources(String packageName) {
-        SortedSet<String> resources = new TreeSet<String>();
+        SortedSet<String> resources = new TreeSet<>();
         for (ClassPath classPath : classPaths) {
             resources.addAll(asList(classPath.listResources(packageName)));
         }
-        return (String[]) resources.toArray(new String[resources.size()]);
+        return resources.toArray(new String[0]);
     }
 
+    @Override
     public InputStream getResourceAsStream(String resource) {
         for (ClassPath classPath : classPaths) {
             InputStream is = classPath.getResourceAsStream(resource);
-            if (is != null)
+            if (is != null) {
                 return is;
+            }
         }
         return null;
     }
 
-    public String[] findResources(String rootPackageName,
+    @Override
+    public String[] findResources(
+            String rootPackageName,
             ResourceFilter resourceFilter) {
-        SortedSet<String> resources = new TreeSet<String>();
+        SortedSet<String> resources = new TreeSet<>();
         for (ClassPath classPath : classPaths) {
             resources.addAll(asList(classPath.findResources(rootPackageName, resourceFilter)));
         }
-        return (String[]) resources.toArray(new String[resources.size()]);
+        return resources.toArray(new String[0]);
     }
-
 }
