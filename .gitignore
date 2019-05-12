@@ -79,3 +79,4 @@ modules.xml
 hs_err_pid*
 
 test-out/
+test-data.jar
