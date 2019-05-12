@@ -21,6 +21,7 @@ public class RegExpResourceFilter implements ResourceFilter {
 
     public static final String ENDS_WITH_CLASS = ".*\\.class";
     public static final String ANY = ".*";
+
     private final Pattern packagePattern;
     private final Pattern resourcePattern;
 
@@ -28,11 +29,12 @@ public class RegExpResourceFilter implements ResourceFilter {
         this(Pattern.compile(packageRegExp), Pattern.compile(resourceRegExp));
     }
 
-    public RegExpResourceFilter(Pattern packagePattern, Pattern resourcePattern) {
+    private RegExpResourceFilter(Pattern packagePattern, Pattern resourcePattern) {
         this.packagePattern = packagePattern;
         this.resourcePattern = resourcePattern;
     }
 
+    @Override
     public boolean match(String packageName, String resourceName) {
         return packagePattern.matcher(packageName).matches()
                 && resourcePattern.matcher(resourceName).matches();

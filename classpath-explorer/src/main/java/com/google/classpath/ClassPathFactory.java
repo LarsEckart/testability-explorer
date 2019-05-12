@@ -18,6 +18,7 @@ package com.google.classpath;
 import java.io.File;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.List;
 
 public class ClassPathFactory {
 
@@ -40,7 +41,7 @@ public class ClassPathFactory {
     }
 
     public ClassPath createFromPaths(String... paths) {
-        ArrayList<ClassPath> classPaths = new ArrayList<ClassPath>();
+        List<ClassPath> classPaths = new ArrayList<>();
         for (String path : paths) {
             File file = new File(path);
             if (file.isFile()) {
@@ -56,7 +57,7 @@ public class ClassPathFactory {
             }
         }
         ClassPath[] array = new ClassPath[classPaths.size()];
-        array = (ClassPath[]) classPaths.toArray(array);
+        array = classPaths.toArray(array);
         return new CompositeClassPath(array);
     }
 

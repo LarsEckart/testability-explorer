@@ -15,7 +15,8 @@
  */
 package com.google.classpath;
 
-import static com.google.classpath.RegExpResourceFilter.ANY;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -23,55 +24,59 @@ import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
 
-import junit.framework.TestCase;
+import static com.google.classpath.RegExpResourceFilter.ANY;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
-public abstract class ClassPathTest extends TestCase {
+public abstract class ClassPathTest {
 
     protected ClassPath path;
 
-    @Override
+    @BeforeEach
     protected void setUp() throws Exception {
-        super.setUp();
         path = createClassPath();
     }
 
-    abstract protected ClassPath createClassPath() throws IOException;
+    protected abstract ClassPath createClassPath() throws IOException;
 
-    public void assertArrayEqualsAnyOrder(String[] actual, String... expected) {
-        Set<String> expectedAsSet = new HashSet<String>(Arrays.asList(expected));
+    void assertArrayEqualsAnyOrder(String[] actual, String... expected) {
+        Set<String> expectedAsSet = new HashSet<>(Arrays.asList(expected));
         assertEquals(
-                "Expected not allowed to contain duplicates for this assertion, but does.",
-                expectedAsSet.size(), expected.length);
+                expectedAsSet.size(), expected.length, "Expected not allowed to contain duplicates for this assertion, but does.");
 
         String error = String.format(
                 "Expected (%s length) not same as Actual (%s length)", expected.length,
                 actual.length);
-        assertEquals(error, expected.length, actual.length);
+        assertEquals(expected.length, actual.length, error);
 
-        Set<String> actualAsSet = new HashSet<String>(Arrays.asList(actual));
+        Set<String> actualAsSet = new HashSet<>(Arrays.asList(actual));
         error = String.format("Expected: '%s' Actual: '%s'", expected, actualAsSet);
-        assertEquals(error, actualAsSet, expectedAsSet);
+        assertEquals(actualAsSet, expectedAsSet, error);
     }
 
-    public void testCheckForResource() throws Exception {
-        assertTrue(path.isResource("A/1.file"));
-        assertTrue(path.isResource("/A/1.file"));
-        assertFalse(path.isResource("/A/1.file/"));
-        assertTrue(path.isResource("/A/2.file"));
-        assertFalse(path.isResource("NON_EXISTANT"));
-        assertFalse(path.isResource("A"));
-        assertFalse(path.isResource("/A"));
-        assertFalse(path.isResource("/A/"));
-        assertFalse(path.isPackage("NON_EXISTANT"));
+    @Test
+    void testCheckForResource() {
+        assertThat(path.isResource("A/1.file")).isTrue();
+        assertThat(path.isResource("/A/1.file")).isTrue();
+        assertThat(path.isResource("/A/1.file/")).isFalse();
+        assertThat(path.isResource("/A/2.file")).isTrue();
+        assertThat(path.isResource("NON_EXISTANT")).isFalse();
+        assertThat(path.isResource("A")).isFalse();
+        assertThat(path.isResource("/A")).isFalse();
+        assertThat(path.isResource("/A/")).isFalse();
+        assertThat(path.isPackage("NON_EXISTANT")).isFalse();
     }
 
-    public void testCheckForPackage() throws Exception {
-        assertTrue(path.isPackage("A"));
-        assertFalse(path.isResource("A"));
-        assertFalse(path.isPackage("NON_EXISTANT"));
+    @Test
+    void testCheckForPackage() throws Exception {
+        assertThat(path.isPackage("A")).isTrue();
+        assertThat(path.isResource("A")).isFalse();
+        assertThat(path.isPackage("NON_EXISTANT")).isFalse();
     }
 
-    public void testListPackages() throws Exception {
+    @Test
+    void testListPackages() throws Exception {
         assertArrayEqualsAnyOrder(path.listPackages(""), "A", "META-INF");
         assertArrayEqualsAnyOrder(path.listPackages("/"), "A", "META-INF");
         assertArrayEqualsAnyOrder(path.listPackages("A"), "B", "C");
@@ -80,7 +85,8 @@ public abstract class ClassPathTest extends TestCase {
         assertArrayEqualsAnyOrder(path.listPackages("/A/"), "B", "C");
     }
 
-    public void testListResources() throws Exception {
+    @Test
+    void testListResources() throws Exception {
         assertArrayEqualsAnyOrder(path.listResources(""));
         assertArrayEqualsAnyOrder(path.listResources("/"));
         assertArrayEqualsAnyOrder(path.listResources("A"), "1.file", "2.file");
@@ -88,14 +94,16 @@ public abstract class ClassPathTest extends TestCase {
         assertArrayEqualsAnyOrder(path.listResources("/A/"), "1.file", "2.file");
     }
 
-    public void testFindResources() throws Exception {
+    @Test
+    void testFindResources() throws Exception {
         RegExpResourceFilter anyFile = new RegExpResourceFilter(ANY, ".*\\.file");
         assertArrayEqualsAnyOrder(path.findResources("X", anyFile));
         assertArrayEqualsAnyOrder(path.findResources("", anyFile), "A/1.file",
                 "A/2.file", "A/B/3.file");
     }
 
-    public void testReadResource() throws Exception {
+    @Test
+    void testReadResource() throws Exception {
         assertEquals("FILE1", read(path.getResourceAsStream("A/1.file")));
         assertEquals("FILE1", read(path.getResourceAsStream("/A/1.file")));
         assertNull(path.getResourceAsStream("A/1.file/"));
@@ -112,5 +120,4 @@ public abstract class ClassPathTest extends TestCase {
         is.close();
         return buf.toString();
     }
-
 }

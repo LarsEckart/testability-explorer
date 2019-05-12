@@ -18,7 +18,7 @@ package com.google.classpath;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
-public class ResourceFinder {
+class ResourceFinder {
 
     private final ClassPath classPath;
 
@@ -27,13 +27,13 @@ public class ResourceFinder {
     }
 
     public String[] findResources(String rootPackageName, ResourceFilter resourceFilter) {
-        SortedSet<String> resources = new TreeSet<String>();
-        findResources(resources, rootPackageName, resourceFilter, new TreeSet<String>());
-        return (String[]) resources.toArray(new String[resources.size()]);
+        SortedSet<String> resources = new TreeSet<>();
+        findResources(resources, rootPackageName, resourceFilter, new TreeSet<>());
+        return resources.toArray(new String[0]);
     }
 
-    private void findResources(SortedSet<String> resources, String rootPackageName,
-            ResourceFilter resourceFilter, TreeSet<String> visitedPackages) {
+    private void findResources(
+            SortedSet<String> resources, String rootPackageName, ResourceFilter resourceFilter, TreeSet<String> visitedPackages) {
         if (rootPackageName.startsWith("/")) {
             rootPackageName = rootPackageName.substring(1);
         }
@@ -42,8 +42,7 @@ public class ResourceFinder {
         }
         visitedPackages.add(rootPackageName);
         for (String packageName : classPath.listPackages(rootPackageName)) {
-            findResources(resources, rootPackageName + "/" + packageName,
-                    resourceFilter, visitedPackages);
+            findResources(resources, rootPackageName + "/" + packageName, resourceFilter, visitedPackages);
         }
         for (String resourceName : classPath.listResources(rootPackageName)) {
             if (resourceFilter.match(rootPackageName, resourceName)) {
@@ -55,5 +54,4 @@ public class ResourceFinder {
             }
         }
     }
-
 }

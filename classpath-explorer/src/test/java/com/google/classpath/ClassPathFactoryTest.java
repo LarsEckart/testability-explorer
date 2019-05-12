@@ -15,14 +15,19 @@
  */
 package com.google.classpath;
 
-import static java.io.File.separator;
-import static java.io.File.separatorChar;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
 
 import java.io.File;
 
-import junit.framework.TestCase;
+import static java.io.File.separator;
+import static java.io.File.separatorChar;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
-public class ClassPathFactoryTest extends TestCase {
+class ClassPathFactoryTest {
 
     private ClassPathFactory factory = new ClassPathFactory();
     private String bin;
@@ -30,8 +35,8 @@ public class ClassPathFactoryTest extends TestCase {
     private String binName;
     private String binTestName;
 
-    @Override
-    protected void setUp() throws Exception {
+    @BeforeEach
+    protected void setUp() {
         String[] paths = factory.parseClasspath(factory.getJVMClasspath());
         for (String path : paths) {
             File pathFile = new File(path);
@@ -39,8 +44,7 @@ public class ClassPathFactoryTest extends TestCase {
                 if (new File(pathFile, pathOfClass(ClassPathFactory.class)).exists()) {
                     bin = path;
                     binName = path.substring(path.lastIndexOf(separator));
-                }
-                else if (new File(pathFile, pathOfClass(this.getClass())).exists()) {
+                } else if (new File(pathFile, pathOfClass(this.getClass())).exists()) {
                     binTest = path;
                     binTestName = path.substring(path.lastIndexOf(separator));
                 }
@@ -50,14 +54,16 @@ public class ClassPathFactoryTest extends TestCase {
         assertNotNull(binName);
     }
 
-    public void testReadJVMClasspath() throws Exception {
+    @Test
+    void testReadJVMClasspath() throws Exception {
         String classpath = factory.getJVMClasspath();
         assertEquals(System.getProperty("java.class.path"), classpath);
         assertTrue(classpath.contains(binName));
         assertTrue(classpath.contains(binTestName));
     }
 
-    public void testParseClasspath() throws Exception {
+    @Test
+    void testParseClasspath() throws Exception {
         String[] paths = factory.parseClasspath(factory.getJVMClasspath());
         boolean bin = false;
         boolean binTest = false;
@@ -69,22 +75,26 @@ public class ClassPathFactoryTest extends TestCase {
         assertTrue(binTest);
     }
 
-    public void testCreateFromJVM() throws Exception {
+    @Test
+    void testCreateFromJVM() throws Exception {
         ClassPath path = factory.createFromJVM();
         assertNotNull(path);
     }
 
-    public void testCreateFromPath() throws Exception {
+    @Test
+    void testCreateFromPath() throws Exception {
         ClassPath path = factory.createFromPath(bin + File.pathSeparator + binTest);
         assertNotNull(path);
     }
 
-    public void testIllegalPathIsIgnored() throws Exception {
+    @Test
+    void testIllegalPathIsIgnored() throws Exception {
         factory.createFromPath("X-ABC-X");
         // no exception
     }
 
-    public void testCreateFromPaths() throws Exception {
+    @Test
+    void testCreateFromPaths() {
         ClassPath path = factory.createFromPaths(bin, binTest);
         assertNotNull(path);
         assertFalse(path.isResource(clazz(Object.class)));
@@ -99,5 +109,4 @@ public class ClassPathFactoryTest extends TestCase {
     private String pathOfClass(Class<?> aClass) {
         return aClass.getName().replace('.', separatorChar) + ".class";
     }
-
 }

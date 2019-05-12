@@ -62,7 +62,7 @@ public class JavaTestabilityRunner implements Runnable {
   }
 
   public AnalysisModel generateModel(IssuesReporter issuesReporter) {
-    SortedSet<String> classNames = new TreeSet<String>();
+    SortedSet<String> classNames = new TreeSet<>();
     RegExpResourceFilter resourceFilter = new RegExpResourceFilter(ANY, ENDS_WITH_CLASS);
     AnalysisModel model = new AnalysisModel(issuesReporter);
     for (String entry : entryList) {

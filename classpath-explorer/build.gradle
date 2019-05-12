@@ -1,7 +1,32 @@
-
 dependencies {
-    testCompile 'junit:junit:3.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.4.2'
+    testImplementation 'org.assertj:assertj-core:3.12.2'
 }
 
 description = 'Classpath Explorer - Core'
 
+test {
+    useJUnitPlatform()
+    testLogging {
+        events "passed", "skipped", "failed"
+    }
+}
+
+task testJar(type: Jar) {
+    manifest {
+        attributes 'Implementation-Version': 1.0
+    }
+    from 'test-data'
+    archiveFileName = 'test-data.jar'
+    destinationDirectory = project.projectDir
+    //with jar
+    // TODO: exclude .keep file in folder C
+}
+
+test.dependsOn testJar
+
+task deleteTestJar(type: Delete) {
+    delete file('test-data.jar') 
+}
+
+clean.dependsOn deleteTestJar

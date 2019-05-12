@@ -15,8 +15,12 @@
  */
 package com.google.classpath;
 
+import org.junit.jupiter.api.Test;
+
 import java.io.File;
-import java.util.Arrays;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertAll;
 
 public class DirectoryClassPathTest extends ClassPathTest {
 
@@ -25,9 +29,16 @@ public class DirectoryClassPathTest extends ClassPathTest {
         return new DirectoryClassPath(new File("test-data"));
     }
 
-    public void testNonExistantDirectory() throws Exception {
-        DirectoryClassPath classPath = new DirectoryClassPath(new File("NON_EXISTENT"));
-        assertTrue(Arrays.equals(new String[0], classPath.listPackages("NON_EXISTENT")));
-        assertTrue(Arrays.equals(new String[0], classPath.listResources("NON_EXISTENT")));
+    @Test
+    void testNonExistantDirectory() {
+        File rootDirectory = new File("NON_EXISTENT");
+        DirectoryClassPath classPath = new DirectoryClassPath(rootDirectory);
+
+        String[] packages = classPath.listPackages("NON_EXISTENT");
+        String[] resources = classPath.listResources("NON_EXISTENT");
+
+        assertAll(
+                () -> assertThat(packages).isEmpty(),
+                () -> assertThat(resources).isEmpty());
     }
 }
