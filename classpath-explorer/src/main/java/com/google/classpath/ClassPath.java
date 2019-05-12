@@ -23,11 +23,11 @@ public interface ClassPath {
 
     boolean isPackage(String packageName);
 
+    String[] listResources(String packageName);
+
     String[] listPackages(String string);
 
     InputStream getResourceAsStream(String resource);
-
-    String[] listResources(String packageName);
 
     String[] findResources(String rootPackageName, ResourceFilter resourceFilter);
 }

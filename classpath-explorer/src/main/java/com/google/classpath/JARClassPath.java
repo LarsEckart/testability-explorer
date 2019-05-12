@@ -24,17 +24,18 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeMap;
 import java.util.TreeSet;
-import java.util.logging.Logger;
 import java.util.jar.JarEntry;
 import java.util.jar.JarFile;
+import java.util.logging.Logger;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipException;
 
 public class JARClassPath implements ClassPath {
 
     private static class Package {
-        private final Map<String, Package> packages = new TreeMap<String, Package>();
-        private final SortedSet<String> resources = new TreeSet<String>();
+
+        private final Map<String, Package> packages = new TreeMap<>();
+        private final SortedSet<String> resources = new TreeSet<>();
     }
 
     private final File file;
@@ -66,6 +67,7 @@ public class JARClassPath implements ClassPath {
         return this;
     }
 
+    @Override
     public boolean isResource(String resource) {
         int index = resource.lastIndexOf("/");
         String path = index == -1 ? "" : resource.substring(0, index);
@@ -74,28 +76,32 @@ public class JARClassPath implements ClassPath {
         return pkg != null && pkg.resources.contains(name);
     }
 
+    @Override
     public boolean isPackage(String packageName) {
         return getPackage(packageName) != null;
     }
 
+    @Override
     public String[] listPackages(String packageName) {
         Package pkg = getPackage(packageName);
         if (pkg == null) {
             return new String[0];
         }
         Set<String> packages = pkg.packages.keySet();
-        return (String[]) packages.toArray(new String[packages.size()]);
+        return packages.toArray(new String[0]);
     }
 
+    @Override
     public String[] listResources(String packageName) {
         Package pkg = getPackage(packageName);
         if (pkg == null) {
             return new String[0];
         }
         SortedSet<String> resources = pkg.resources;
-        return (String[]) resources.toArray(new String[resources.size()]);
+        return resources.toArray(new String[0]);
     }
 
+    @Override
     public InputStream getResourceAsStream(String resource) {
         while (resource.startsWith("/")) {
             resource = resource.substring(1);
@@ -112,6 +118,7 @@ public class JARClassPath implements ClassPath {
         }
     }
 
+    @Override
     public String[] findResources(String rootPackageName, ResourceFilter resourceFilter) {
         return new ResourceFinder(this).findResources(rootPackageName, resourceFilter);
     }
@@ -155,5 +162,4 @@ public class JARClassPath implements ClassPath {
         }
         return pkg;
     }
-
 }

@@ -26,12 +26,16 @@ public class DirectoryClassPath implements ClassPath {
     private final File rootDirectory;
 
     public static class DirectoryFilter implements FileFilter {
+
+        @Override
         public boolean accept(File dir) {
-            return dir.isDirectory() && !dir.getName().equals(".svn");
+            return dir.isDirectory() && !dir.getName().equals(".git");
         }
     }
 
     public static class FileFileFilter implements FileFilter {
+
+        @Override
         public boolean accept(File file) {
             return file.isFile();
         }
@@ -41,22 +45,27 @@ public class DirectoryClassPath implements ClassPath {
         this.rootDirectory = rootDirectory;
     }
 
+    @Override
     public boolean isResource(String resource) {
         return !resource.endsWith("/") && getFile(resource).isFile();
     }
 
+    @Override
     public boolean isPackage(String packageName) {
         return getFile(packageName).isDirectory();
     }
 
+    @Override
     public String[] listPackages(String packageName) {
         return listNames(packageName, new DirectoryFilter());
     }
 
+    @Override
     public String[] listResources(String packageName) {
         return listNames(packageName, new FileFileFilter());
     }
 
+    @Override
     public InputStream getResourceAsStream(String resource) {
         if (isResource(resource)) {
             try {
@@ -69,6 +78,7 @@ public class DirectoryClassPath implements ClassPath {
         }
     }
 
+    @Override
     public String[] findResources(String rootPackageName, ResourceFilter resourceFilter) {
         return new ResourceFinder(this).findResources(rootPackageName, resourceFilter);
     }
@@ -89,5 +99,4 @@ public class DirectoryClassPath implements ClassPath {
         }
         return names;
     }
-
 }

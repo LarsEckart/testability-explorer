@@ -69,14 +69,14 @@ public abstract class ClassPathTest {
     }
 
     @Test
-    void testCheckForPackage() throws Exception {
+    void testCheckForPackage() {
         assertThat(path.isPackage("A")).isTrue();
         assertThat(path.isResource("A")).isFalse();
         assertThat(path.isPackage("NON_EXISTANT")).isFalse();
     }
 
     @Test
-    void testListPackages() throws Exception {
+    void testListPackages() {
         assertArrayEqualsAnyOrder(path.listPackages(""), "A", "META-INF");
         assertArrayEqualsAnyOrder(path.listPackages("/"), "A", "META-INF");
         assertArrayEqualsAnyOrder(path.listPackages("A"), "B", "C");
@@ -86,7 +86,7 @@ public abstract class ClassPathTest {
     }
 
     @Test
-    void testListResources() throws Exception {
+    void testListResources() {
         assertArrayEqualsAnyOrder(path.listResources(""));
         assertArrayEqualsAnyOrder(path.listResources("/"));
         assertArrayEqualsAnyOrder(path.listResources("A"), "1.file", "2.file");
@@ -95,7 +95,7 @@ public abstract class ClassPathTest {
     }
 
     @Test
-    void testFindResources() throws Exception {
+    void testFindResources() {
         RegExpResourceFilter anyFile = new RegExpResourceFilter(ANY, ".*\\.file");
         assertArrayEqualsAnyOrder(path.findResources("X", anyFile));
         assertArrayEqualsAnyOrder(path.findResources("", anyFile), "A/1.file",

@@ -52,13 +52,10 @@ public class ClassPathFactory {
                 }
             } else if (file.isDirectory()) {
                 classPaths.add(new DirectoryClassPath(file));
-            } else {
-                //ignore since that is what JVM does.
             }
         }
         ClassPath[] array = new ClassPath[classPaths.size()];
         array = classPaths.toArray(array);
         return new CompositeClassPath(array);
     }
-
 }
