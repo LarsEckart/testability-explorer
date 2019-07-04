@@ -11,7 +11,7 @@
   <name>Testability Explorer - Maven plugin</name>
 
   <properties>
-    <mavenVersion>2.0</mavenVersion>
+    <mavenVersion>3.5.0</mavenVersion>
   </properties>
 
   <dependencies>
